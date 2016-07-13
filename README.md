@@ -1,5 +1,5 @@
 # DailyXKCD
-A module for MagicMirror2 that displays the daily XKCD web comic.
+A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
 
 ## Dependencies
   * A [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror) installation
