@@ -8,7 +8,7 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
   1. Clone this repo into your `modules` directory.
   2. Create an entry in your `config.js` file to tell this module where to display on screen.
   
- >Example:
+ **Example:**
 ```
  {
     module: 'DailyXKCD',
