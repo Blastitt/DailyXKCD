@@ -13,6 +13,13 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
  {
     module: 'DailyXKCD',
 	position: 'top_left',
-	config: {}
+	config: {
+		invertColors: true	
+	}
  },
 ```
+
+## Config
+| **Option** | **Description** |
+| --- | --- |
+| `invertColors` | Set to `true` to invert the colors of the comic to white on black for a darker feel. |
