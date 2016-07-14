@@ -3,7 +3,8 @@ Module.register("DailyXKCD",{
 	// Default module config.
 	defaults: {
 		dailyJsonUrl : "http://xkcd.com/info.0.json",
-		updateInterval : 10000 * 60 * 60 // 10 hours
+		updateInterval : 10000 * 60 * 60, // 10 hours
+		invertColors : false
 		
 	},
 	
@@ -49,6 +50,9 @@ Module.register("DailyXKCD",{
 		
 		var xkcd = document.createElement("img");
 		xkcd.src = this.dailyComic;
+		if(this.config.invertColors){
+			xkcd.setAttribute("style", "filter: invert(100%);")
+		}
 		
 		wrapper.appendChild(title);
 		wrapper.appendChild(xkcd);
