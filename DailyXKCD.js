@@ -7,12 +7,17 @@ Module.register("DailyXKCD",{
 		invertColors : false
 		
 	},
+
+	getStyles : function () {
+		return ["DailyXKCD.css"];
+	},
 	
 	start: function() {
 		Log.info(this.config);
 		Log.info("Starting module: " + this.name);
 		
 		this.dailyComic = "";
+		this.dailyComicNum = "";
 		this.dailyComicTitle = "";
 		
 		this.getComic();
@@ -34,6 +39,7 @@ Module.register("DailyXKCD",{
 		if(notification === "COMIC"){
 				Log.info(payload.img);
 				this.dailyComic = payload.img;
+				this.dailyComicNum = payload.num;
 				this.dailyComicTitle = payload.safe_title;
 				this.scheduleUpdate();
 		}
@@ -45,14 +51,16 @@ Module.register("DailyXKCD",{
 		var wrapper = document.createElement("div");
 		
 		var title = document.createElement("div");
-		title.className = "bright large light";
+		title.className = "bright medium light";
 		title.innerHTML = this.dailyComicTitle;
 		
 		var xkcd = document.createElement("img");
 		xkcd.src = this.dailyComic;
 		if(this.config.invertColors){
-			xkcd.setAttribute("style", "-webkit-filter: invert(100%);")
+			xkcd.setAttribute("style", "-webkit-filter: invert(100%); max-width: 100%; max-height: 100%; height: 280px; ")
 		}
+		
+		wrapper.className = "img";
 		
 		wrapper.appendChild(title);
 		wrapper.appendChild(xkcd);
