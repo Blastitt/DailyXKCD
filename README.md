@@ -23,3 +23,5 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
 | **Option** | **Description** |
 | --- | --- |
 | `invertColors` | Set to `true` to invert the colors of the comic to white on black for a darker feel. |
+| `titleFont` | Set a custom font format, default is `large light bright`. To set the size use one of `xsmall small medium large xlarge`, for boldness one of `thin light regular bold`, and to adjust brightness one of `dimmed normal bright`. |
+| `showAltText` | Set to `true` to show the alt text (tooltip on the original comic). |
