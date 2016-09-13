@@ -31,7 +31,7 @@ Module.register("DailyXKCD",{
 			this.scrollProgress = 0;
 		}
 
-		this.pause = false;
+		this.pause = true;
 	},
 	
 	// Define required scripts.
@@ -66,11 +66,11 @@ Module.register("DailyXKCD",{
 		if (notification === "USER_PRESENCE") {
 			if (payload === true)
 			{
-				this.pause = true;
+				this.pause = false;
 			}
 			else
 			{
-				this.pause = false;
+				this.pause = true;
 			}
 		}
 	},
