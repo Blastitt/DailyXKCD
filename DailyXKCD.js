@@ -88,7 +88,7 @@ Module.register("DailyXKCD",{
 		comicWrapper.className = "xkcdcontainer";
 		if (this.config.limitComicHeight > 0)
 		{
-			comicWrapper.style.height = this.config.limitComicHeight + "px";
+			comicWrapper.style.maxHeight = this.config.limitComicHeight + "px";
 		}
 
 		var xkcd = document.createElement("img");
@@ -106,6 +106,7 @@ Module.register("DailyXKCD",{
 			var alttext = document.createElement("div");
 			alttext.className = this.config.altTextFont;
 			alttext.innerHTML = this.dailyComicAlt;
+			alttext.style.maxWidth = xkcd.naturalWidth + "px";
 
 			wrapper.appendChild(alttext);
 		}
