@@ -31,7 +31,7 @@ Module.register("DailyXKCD",{
 			this.scrollProgress = 0;
 		}
 
-		this.pause = true;
+		this.pause = false;
 	},
 	
 	// Define required scripts.
