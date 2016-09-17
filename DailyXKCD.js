@@ -25,7 +25,7 @@ Module.register("DailyXKCD",{
 		{
 			var self = this;
 			// scroll comic up and down
-			setInterval(function() {
+			this.addAutoSuspendingInterval(function() {
 				self.scrollComic();
 			}, 8 * 1000);
 			this.scrollProgress = 0;
@@ -63,16 +63,7 @@ Module.register("DailyXKCD",{
 	},
 
 	notificationReceived: function(notification, payload, sender) {
-		if (notification === "USER_PRESENCE") {
-			if (payload === true)
-			{
-				this.pause = false;
-			}
-			else
-			{
-				this.pause = true;
-			}
-		}
+		this.checkUserPresence(notification, payload, sender);
 	},
 	
 	// Override dom generator.
@@ -106,7 +97,7 @@ Module.register("DailyXKCD",{
 			var alttext = document.createElement("div");
 			alttext.className = this.config.altTextFont;
 			alttext.innerHTML = this.dailyComicAlt;
-			alttext.style.maxWidth = xkcd.naturalWidth + "px";
+			alttext.style.maxWidth = Math.max(xkcd.naturalWidth, 400) + "px";
 
 			wrapper.appendChild(alttext);
 		}
@@ -114,16 +105,24 @@ Module.register("DailyXKCD",{
 		return wrapper;
 	},
 	
+	/* onSuspend()
+	 * This method is called when a module is hidden.
+	 */
+	onSuspend: function() {
+		this.scrollProgress = 0;
+
+		var scrollable = document.getElementsByClassName('xkcdcontent');
+		for (var i = 0; i < scrollable.length; i++)
+		{
+			var element = scrollable[i];
+			element.style.top = 0 + "px";
+		}
+	},
+
 	/* scrollComic
 	 * Scrolls the comic down if needed
 	 */
 	scrollComic: function() {
-		if (this.pause)
-		{
-			this.scrollProgress = 0;
-			return;
-		}
-
 		var scrollable = document.getElementsByClassName('xkcdcontent');
 		for (var i = 0; i < scrollable.length; i++)
 		{
