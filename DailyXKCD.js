@@ -51,13 +51,12 @@ Module.register("DailyXKCD",{
 	},
 	
 	socketNotificationReceived: function(notification, payload) {
-		
-		if(notification === "COMIC"){
-				Log.info(payload.img);
-				this.dailyComic = payload.img;
-				this.dailyComicTitle = payload.safe_title;
-				this.dailyComicAlt = payload.alt;
-				this.scheduleUpdate();
+		if(notification === "COMIC") {
+			Log.info(payload.img);
+			this.dailyComic = payload.img;
+			this.dailyComicTitle = payload.safe_title;
+			this.dailyComicAlt = payload.alt;
+			this.scheduleUpdate();
 		}
 		
 	},
@@ -97,7 +96,6 @@ Module.register("DailyXKCD",{
 			var alttext = document.createElement("div");
 			alttext.className = this.config.altTextFont;
 			alttext.innerHTML = this.dailyComicAlt;
-			alttext.style.maxWidth = Math.max(xkcd.naturalWidth, 400) + "px";
 
 			wrapper.appendChild(alttext);
 		}
