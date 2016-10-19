@@ -142,10 +142,76 @@ Module.register("DailyXKCD",{
 		this.scrollProgress += 1;
 	},
 
+	// contains auto suspending autoIntervals
+	autoIntervals: [],
+
+	/* checkUserPresence(notification, payload, sender)
+	 * Use this method to conveniently suspend your module when no user is present.
+	 */
+	checkUserPresence: function(notification, payload, sender) {
+		if (sender && notification === "USER_PRESENCE") {
+			if (payload === true)
+			{
+				this.resumeIntervals();
+			}
+			else
+			{
+				this.suspendIntervals();
+			}
+		}
+	},
+
+	/* addAutoSuspendingInterval(callback, time)
+	 * Use instead of setInterval for automatic pause when on suspend.
+	 * The callback is executed immediately once after the user returns.
+	 */
+	addAutoSuspendingInterval: function(callback, time) {
+		var newInterval = setInterval(callback, time);
+		this.autoIntervals.push({
+			callback: callback,
+			interval: newInterval,
+			time: time
+		});
+	},
+
+	/* suspendIntervals()
+	 * This method is called when a module is hidden.
+	 */
+	suspendIntervals: function() {
+		for (var i = 0; i < this.autoIntervals.length; i++)
+		{
+			var current = this.autoIntervals[i];
+
+			if (current.interval)
+			{
+				clearInterval(current.interval);
+
+				current.interval = null;
+			}
+		}
+	},
+
+	/* resumeIntervals()
+	 * This method is called when a module is shown.
+	 */
+	resumeIntervals: function() {
+		for (var i = 0; i < this.autoIntervals.length; i++)
+		{
+			var current = this.autoIntervals[i];
+
+			if (!current.interval)
+			{
+				current.callback();
+
+				current.interval = setInterval(current.callback, current.time);
+			}
+		}
+	},
+
 	scheduleUpdate: function() {
 		var self = this;
 		
-		self.updateDom(2000);
+		self.updateDom(3000);
 		
 		setInterval(function() {
 			self.getComic();
