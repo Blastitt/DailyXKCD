@@ -14,7 +14,9 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
     module: 'DailyXKCD',
 	position: 'top_left',
 	config: {
-		invertColors: true	
+		invertColors: true
+		title: true
+		altText: false
 	}
  },
 ```
@@ -23,3 +25,5 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
 | **Option** | **Description** |
 | --- | --- |
 | `invertColors` | Set to `true` to invert the colors of the comic to white on black for a darker feel. |
+| `title` | Set to `true` to display the title of the comic. |
+| `altText` | Set to `true` to display the alternate text of the comic. |
