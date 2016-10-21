@@ -57,7 +57,7 @@ Module.register("DailyXKCD", {
         var xkcd = document.createElement("img");
         xkcd.src = this.dailyComic;
         if (this.config.invertColors) {
-            xkcd.setAttribute("style", "-webkit-filter: invert(100%);")
+                 xkcd.setAttribute("style", "-webkit-filter: invert(100%); max-width: 100%; max-height: 100%; height: 280px; ")
         }
 
 
