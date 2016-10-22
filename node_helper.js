@@ -15,21 +15,22 @@ module.exports = NodeHelper.create({
 		if(notification === "GET_COMIC"){
 			
 			var comicJsonUri = payload.config.dailyJsonUrl;
-      var comicDays = [ 1,3,5 ];
-			var today = new Date();
-			var dayNum = new Date().getDay(); 
 			
 			request(comicJsonUri, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					if ( comicDays.indexOf(dayNum) ) {
+                    var comicDays = [ 1,3,5 ];
+                    var dayNum = new Date().getDay(); 
+                    console.log("dayNum: "  + dayNum + " " + comicDays.indexOf(dayNum) );
+					if ( parseFloat(comicDays.indexOf(dayNum)) !== parseFloat("-1") ) {
                             console.log("New Comic");
 							self.sendSocketNotification("COMIC", JSON.parse(body));
 					} else {
                         console.log("Random Comic");
-                        var comic = JSON.parse(body); 
-                        var rndcomic = Math.floor((Math.random() * this.comic.num) + 1); 
-                        var rndUrl = "http://xkcd.com/" + this.rndcomic + "/info.0.json";
-                        request(this.rndUrl, function (error, response, body) {
+                        var comic = JSON.parse(body);                         
+                        var rndcomic = Math.floor((Math.random() * comic.num) + 1); 
+                        var rndUrl = "http://xkcd.com/" + rndcomic.toString() + "/info.0.json";
+                        console.log("Random url: " + rndUrl);
+                        request(rndUrl, function (error, response, body) {
                             if (!error && response.statusCode == 200) {
                                 self.sendSocketNotification("COMIC", JSON.parse(body));
                             }
