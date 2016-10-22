@@ -18,13 +18,27 @@ module.exports = NodeHelper.create({
 			
 			request(comicJsonUri, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					console.log(body);
-					self.sendSocketNotification("COMIC", JSON.parse(body));
-					console.log(JSON.parse(body).img);
-					
+                    var comicDays = [ 1,3,5 ];
+                    var dayNum = new Date().getDay(); 
+                    console.log("dayNum: "  + dayNum + " " + comicDays.indexOf(dayNum) );
+					if ( parseFloat(comicDays.indexOf(dayNum)) !== parseFloat("-1") ) {
+                            console.log("New Comic");
+							self.sendSocketNotification("COMIC", JSON.parse(body));
+					} else {
+                        console.log("Random Comic");
+                        var comic = JSON.parse(body);                         
+                        var rndcomic = Math.floor((Math.random() * comic.num) + 1); 
+                        var rndUrl = "http://xkcd.com/" + rndcomic.toString() + "/info.0.json";
+                        console.log("Random url: " + rndUrl);
+                        request(rndUrl, function (error, response, body) {
+                            if (!error && response.statusCode == 200) {
+                                self.sendSocketNotification("COMIC", JSON.parse(body));
+                            }
+                        });
+					}
 				}
 			});
-			
+
 		}
 		
 	},
