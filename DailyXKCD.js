@@ -6,11 +6,17 @@ Module.register("DailyXKCD",{
 		updateInterval : 10000 * 60 * 60, // 10 hours
 		invertColors : false,
 		titleFont : "bright large light",
-		altTextFont : "xsmall dimmed light",
+		altTextFont : "xsmall dimmed",
 		limitComicHeight : 450,
+		scrollInterval : 8000, // 8 seconds,
+		scrollRatio : 0.8, // scroll by 80% of visible height,
+		randomComic : false,
 		showAltText : false
 	},
 	
+	// contains auto suspending autoIntervals
+	autoIntervals: [],
+
 	start: function() {
 		Log.info(this.config);
 		Log.info("Starting module: " + this.name);
@@ -21,13 +27,22 @@ Module.register("DailyXKCD",{
 		
 		this.getComic();
 
+		if (this.config.scrollInterval < 3000) {
+			// animation takes 3 seconds
+			this.config.scrollInterval = 3000;
+		}
+
+		// value should be between 0.0 and 1.0 
+		this.config.scrollRatio = Math.max(this.config.scrollRatio, 0.0);
+		this.config.scrollRatio = Math.min(this.config.scrollRatio, 1.0);
+
 		if (this.config.limitComicHeight > 0)
 		{
 			var self = this;
 			// scroll comic up and down
 			this.addAutoSuspendingInterval(function() {
 				self.scrollComic();
-			}, 8 * 1000);
+			}, this.config.scrollInterval);
 			this.scrollProgress = 0;
 		}
 
@@ -103,10 +118,10 @@ Module.register("DailyXKCD",{
 		return wrapper;
 	},
 	
-	/* onSuspend()
+	/* suspend()
 	 * This method is called when a module is hidden.
 	 */
-	onSuspend: function() {
+	suspend: function() {
 		this.scrollProgress = 0;
 
 		var scrollable = document.getElementsByClassName('xkcdcontent');
@@ -114,9 +129,37 @@ Module.register("DailyXKCD",{
 		{
 			var element = scrollable[i];
 			element.style.top = 0 + "px";
+		};
+
+		for (var i = 0; i < this.autoIntervals.length; i++)
+		{
+			var current = this.autoIntervals[i];
+
+			if (current.interval)
+			{
+				clearInterval(current.interval);
+
+				current.interval = null;
+			}
 		}
 	},
 
+	/* resume()
+	 * This method is called when a module is shown.
+	 */
+	resume: function() {
+		for (var i = 0; i < this.autoIntervals.length; i++)
+		{
+			var current = this.autoIntervals[i];
+
+			if (!current.interval)
+			{
+				current.callback();
+
+				current.interval = setInterval(current.callback, current.time);
+			}
+		}
+	},
 	/* scrollComic
 	 * Scrolls the comic down if needed
 	 */
@@ -130,7 +173,9 @@ Module.register("DailyXKCD",{
 			var top = 0;
 			if (this.config.limitComicHeight > 0 && height > this.config.limitComicHeight)
 			{
-				top = Math.max(this.scrollProgress * -this.config.limitComicHeight * 0.8, this.config.limitComicHeight - height);
+				var currentHeight = this.scrollProgress * -this.config.limitComicHeight * this.config.scrollRatio;
+				var maxHeight = this.config.limitComicHeight - height;
+				top = Math.max(currentHeight, maxHeight);
 			}
 			element.style.top = top + "px";
 			element.style.height = height + "px";
@@ -142,9 +187,6 @@ Module.register("DailyXKCD",{
 		this.scrollProgress += 1;
 	},
 
-	// contains auto suspending autoIntervals
-	autoIntervals: [],
-
 	/* checkUserPresence(notification, payload, sender)
 	 * Use this method to conveniently suspend your module when no user is present.
 	 */
@@ -152,11 +194,11 @@ Module.register("DailyXKCD",{
 		if (sender && notification === "USER_PRESENCE") {
 			if (payload === true)
 			{
-				this.resumeIntervals();
+				this.resume();
 			}
 			else
 			{
-				this.suspendIntervals();
+				this.suspend();
 			}
 		}
 	},
@@ -172,40 +214,6 @@ Module.register("DailyXKCD",{
 			interval: newInterval,
 			time: time
 		});
-	},
-
-	/* suspendIntervals()
-	 * This method is called when a module is hidden.
-	 */
-	suspendIntervals: function() {
-		for (var i = 0; i < this.autoIntervals.length; i++)
-		{
-			var current = this.autoIntervals[i];
-
-			if (current.interval)
-			{
-				clearInterval(current.interval);
-
-				current.interval = null;
-			}
-		}
-	},
-
-	/* resumeIntervals()
-	 * This method is called when a module is shown.
-	 */
-	resumeIntervals: function() {
-		for (var i = 0; i < this.autoIntervals.length; i++)
-		{
-			var current = this.autoIntervals[i];
-
-			if (!current.interval)
-			{
-				current.callback();
-
-				current.interval = setInterval(current.callback, current.time);
-			}
-		}
 	},
 
 	scheduleUpdate: function() {

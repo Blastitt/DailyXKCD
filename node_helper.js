@@ -16,16 +16,25 @@ module.exports = NodeHelper.create({
 			
 			var comicJsonUri = payload.config.dailyJsonUrl;
 
-			var d = new Date();
-			var n = d.getDay();
+			var date = new Date();
+			var dayOfWeek = date.getDay();
 			
 			request(comicJsonUri, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					if (n == 1 || n == 3 || n == 5) {
+					if (!payload.config.randomComic) {
+						// if we are not replacing "old" comics with random ones
+						self.sendSocketNotification("COMIC", JSON.parse(body));
+						return;
+					}
+
+					// otherwise select a random comic based on day of week
+					if (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5) {
 						self.sendSocketNotification("COMIC", JSON.parse(body));
 					} else {
 						var comic = JSON.parse(body);
-						var randomUrl = "http://xkcd.com/" + Math.floor((Math.random() * comic.num) + 1) + "/info.0.json";
+						var randomNumber = Math.floor((Math.random() * comic.num) + 1);
+						// use "randomNumber = 1732;" to test with long comic
+						var randomUrl = "http://xkcd.com/" + randomNumber + "/info.0.json";
 						request(randomUrl, function (error, response, body) {
 							if (!error && response.statusCode == 200) {
 								self.sendSocketNotification("COMIC", JSON.parse(body));
@@ -34,8 +43,6 @@ module.exports = NodeHelper.create({
 					}
 				}
 			});
-
 		}
-		
 	},
 });
