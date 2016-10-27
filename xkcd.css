@@ -8,7 +8,7 @@
     box-sizing: border-box;
 }
 
-.xkcdcontent {
+#xkcdcontent {
   white-space: nowrap;
   position: relative;
   overflow: hidden;    /* Required to make ellipsis work */

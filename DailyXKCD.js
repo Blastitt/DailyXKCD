@@ -11,7 +11,8 @@ Module.register("DailyXKCD", {
         scrollInterval : 8000, // 8 seconds,
         scrollRatio : 0.8, // scroll by 80% of visible height,
         randomComic : false,
-        showAltText : false
+        showAltText : false,
+        showTitle : true
     },
 
     start: function() {
@@ -21,6 +22,8 @@ Module.register("DailyXKCD", {
         this.dailyComic = "";
         this.dailyComicTitle = "";
         this.dailyComicAlt = "";
+
+        this.autoIntervals = [];
 
         this.getComic();
 
@@ -84,7 +87,7 @@ Module.register("DailyXKCD", {
         title.className = this.config.titleFont;
         title.innerHTML = this.dailyComicTitle;
 
-        if (this.config.title) {
+        if (this.config.showTitle) {
             wrapper.appendChild(title);
         }
 
