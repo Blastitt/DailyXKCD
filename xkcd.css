@@ -1,0 +1,22 @@
+/* The basic container */
+.xkcdcontainer {
+    overflow: hidden;
+
+    /* To make the height of the container exact. */
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#xkcdcontent {
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;    /* Required to make ellipsis work */
+  text-overflow: clip;
+
+  top: 0%;
+  
+  -webkit-transition: top 3s, height 3s;
+  -moz-transition: top 3s, height 3s;
+  transition: top 3s, height 3s;
+}
