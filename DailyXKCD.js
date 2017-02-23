@@ -26,6 +26,12 @@ Module.register("DailyXKCD", {
         this.autoIntervals = [];
 
         this.getComic();
+        
+        self = this;
+        
+        setInterval(function() {
+            self.getComic();
+        }, self.config.updateInterval);
 
         if (this.config.scrollInterval < 3000) {
             // animation takes 3 seconds
@@ -71,7 +77,7 @@ Module.register("DailyXKCD", {
             this.dailyComic = payload.img;
             this.dailyComicTitle = payload.safe_title;
             this.dailyComicAlt = payload.alt;
-            this.scheduleUpdate();
+            this.updateDom(1000);
         }
     },
 
@@ -210,16 +216,5 @@ Module.register("DailyXKCD", {
             interval: newInterval,
             time: time
         });
-    },
-
-    scheduleUpdate: function() {
-        var self = this;
-
-        self.updateDom(2000);
-
-        setInterval(function() {
-            self.getComic();
-        }, this.config.updateInterval);
     }
-
 });
