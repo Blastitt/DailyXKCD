@@ -15,8 +15,8 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
 	position: 'top_left',
 	config: {
 		invertColors: true,
-		title: true,
-		altText: false
+		showTitle: true,
+		showAltText: false
 	}
  },
 ```
