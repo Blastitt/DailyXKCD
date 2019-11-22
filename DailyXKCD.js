@@ -4,6 +4,7 @@ Module.register("DailyXKCD", {
     defaults: {
         dailyJsonUrl : "http://xkcd.com/info.0.json",
         updateInterval : 10000 * 60 * 60, // 10 hours
+        grayScale : false,
         invertColors : false,
         titleFont : "bright large light",
         altTextFont : "xsmall dimmed",
@@ -107,8 +108,11 @@ Module.register("DailyXKCD", {
         var xkcd = document.createElement("img");
         xkcd.id = "xkcdcontent";
         xkcd.src = this.dailyComic;
-        if(this.config.invertColors){
-            xkcd.setAttribute("style", "-webkit-filter: invert(100%);")
+        if(this.config.grayScale || this.config.invertColors){
+            xkcd.setAttribute("style", "-webkit-filter: " +
+                                (this.config.grayScale ? "grayscale(100%) " : "") +
+                                (this.config.invertColors ? "invert(100%) " : "") +
+                                ";")
         }
         comicWrapper.appendChild(xkcd);
 

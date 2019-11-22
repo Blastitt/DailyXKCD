@@ -24,6 +24,7 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
 ## Config
 | **Option** | **Description** |
 | --- | --- |
+| `grayScale` | Set to `true` to desaturate the colors of the comic to grayscale. |
 | `invertColors` | Set to `true` to invert the colors of the comic to white on black for a darker feel. |
 | `updateInterval` | Set to desired update interval (in ms), default is `3600000` (10 hours). |
 | `showTitle` | Set to `true` to display the title of the comic. |
