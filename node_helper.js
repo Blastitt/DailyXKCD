@@ -28,7 +28,7 @@ module.exports = NodeHelper.create({
 					}
 
 					// otherwise select a random comic based on day of week
-					if (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5) {
+					if (!payload.config.alwaysRandom && (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5)) {
 						self.sendSocketNotification("COMIC", JSON.parse(body));
 					} else {
 						var comic = JSON.parse(body);

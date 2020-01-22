@@ -12,6 +12,7 @@ Module.register("DailyXKCD", {
         scrollInterval : 8000, // 8 seconds,
         scrollRatio : 0.8, // scroll by 80% of visible height,
         randomComic : false,
+        alwaysRandom : false,
         showAltText : false,
         showTitle : true
     },

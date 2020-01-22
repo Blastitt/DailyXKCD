@@ -32,6 +32,7 @@ A module for MagicMirror<sup>2</sup> that displays the daily XKCD web comic.
 | `showAltText` | Set to `true` to show the alt text (tooltip on the original comic). |
 | `altTextFont` | See `titleFont`, except for this is the formatting of the alt text. |
 | `randomComic` | Set to `true`, if you want to see a random comic on days, when there is no new comic. |
+| `alwaysRandom` | Set to `true`, if you always want to see a random comic, even on days when there is a new comic. _Note: only effective if `randomComic` is set to `true`_ |
 | `limitComicHeight` | Set to limit the height of the comic (in px), default is `450`. The comic will scroll downwards every few seconds, if it is heigher. |
 | `scrollInterval` | How often to scroll long comics (in ms), default is `8000` (every 8 seconds). |
 | `scrollRatio` | Set how much of the visible height is being scrolled every time. The value should be between `0.0` and `1.0`, default is `0.8` so it scrolls down by 80%. |
