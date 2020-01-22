@@ -21,14 +21,14 @@ module.exports = NodeHelper.create({
 			
 			request(comicJsonUri, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					if (!payload.config.randomComic) {
+					if (!payload.config.randomComic && !payload.config.alwaysRandom) {
 						// if we are not replacing "old" comics with random ones
 						self.sendSocketNotification("COMIC", JSON.parse(body));
 						return;
 					}
 
 					// otherwise select a random comic based on day of week
-					if (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5) {
+					if (!payload.config.alwaysRandom && (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5)) {
 						self.sendSocketNotification("COMIC", JSON.parse(body));
 					} else {
 						var comic = JSON.parse(body);
