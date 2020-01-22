@@ -21,7 +21,7 @@ module.exports = NodeHelper.create({
 			
 			request(comicJsonUri, function (error, response, body) {
 				if (!error && response.statusCode == 200) {
-					if (!payload.config.randomComic && !payload.config.alwaysRandom) {
+					if (!payload.config.randomComic) {
 						// if we are not replacing "old" comics with random ones
 						self.sendSocketNotification("COMIC", JSON.parse(body));
 						return;
