@@ -9,6 +9,7 @@ Module.register("DailyXKCD", {
         titleFont : "bright large light",
         altTextFont : "xsmall dimmed",
         limitComicHeight : 450,
+        limitComicWidth : 0,
         scrollInterval : 8000, // 8 seconds,
         scrollRatio : 0.8, // scroll by 80% of visible height,
         randomComic : false,
@@ -94,10 +95,6 @@ Module.register("DailyXKCD", {
         title.className = this.config.titleFont;
         title.innerHTML = this.dailyComicTitle;
 
-        if (this.config.showTitle) {
-            wrapper.appendChild(title);
-        }
-
         var comicWrapper = document.createElement("div");
         comicWrapper.className = "xkcdcontainer";
         if (this.config.limitComicHeight > 0)
@@ -114,14 +111,44 @@ Module.register("DailyXKCD", {
                                 (this.config.invertColors ? "invert(100%) " : "") +
                                 ";")
         }
-        comicWrapper.appendChild(xkcd);
-
-        wrapper.appendChild(comicWrapper);
 
         if (this.config.showAltText) {
             var alt = document.createElement("div");
             alt.className = this.config.altTextFont;
             alt.innerHTML = this.dailyComicAlt;
+        }
+
+        function limitWidth() {
+
+            var width = this.width;
+
+            // limit comic width if necessary
+            if(this.config.limitComicWidth > 0 && width > this.config.limitComicWidth)
+            {
+                width = this.config.limitComicWidth;
+                xkcd.setAttribute("width", this.config.limitComicWidth + "px");
+                xkcd.setAttribute("height", "auto");
+            }
+            // limit title width
+            if (this.config.limitComicWidth > 0 && this.config.showTitle) {
+                title.style.width = width + "px";
+            }
+            // limit alt text width
+            if (this.config.limitComicWidth > 0 && this.config.showAltText) {
+                alt.style.width = width + "px";
+            }
+        }
+
+        xkcd.config = this.config;
+        xkcd.onload = limitWidth;
+
+        if (this.config.showTitle) {
+            wrapper.appendChild(title);
+        }
+
+        comicWrapper.appendChild(xkcd);
+        wrapper.appendChild(comicWrapper);
+        if (this.config.showAltText) {
             wrapper.appendChild(alt);
         }
 
@@ -174,7 +201,7 @@ Module.register("DailyXKCD", {
     scrollComic: function() {
         var scrollable = document.getElementById("xkcdcontent");
 
-        var height = scrollable.naturalHeight;
+        var height = scrollable.height;
 
         var top = 0;
         if (this.config.limitComicHeight > 0 && height > this.config.limitComicHeight)
