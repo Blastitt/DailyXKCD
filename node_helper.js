@@ -1,4 +1,4 @@
-var request = require('request');
+var https = require('https');
 var NodeHelper = require("node_helper");
 
 module.exports = NodeHelper.create({
@@ -14,35 +14,51 @@ module.exports = NodeHelper.create({
 		
 		if(notification === "GET_COMIC") {
 			
-			var comicJsonUri = payload.config.dailyJsonUrl;
+			var comicHostname = payload.config.hostname;
+			var comicDailyJsonUrlPath = payload.config.dailyJsonUrlPath;
 
 			var date = new Date();
 			var dayOfWeek = date.getDay();
 			
-			request(comicJsonUri, function (error, response, body) {
-				if (!error && response.statusCode == 200) {
-					if (!payload.config.randomComic) {
-						// if we are not replacing "old" comics with random ones
-						self.sendSocketNotification("COMIC", JSON.parse(body));
-						return;
-					}
-
-					// otherwise select a random comic based on day of week
-					if (dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5) {
-						self.sendSocketNotification("COMIC", JSON.parse(body));
-					} else {
-						var comic = JSON.parse(body);
-						var randomNumber = Math.floor((Math.random() * comic.num) + 1);
-						// use "randomNumber = 1732;" to test with long comic
-						var randomUrl = "http://xkcd.com/" + randomNumber + "/info.0.json";
-						request(randomUrl, function (error, response, body) {
-							if (!error && response.statusCode == 200) {
-								self.sendSocketNotification("COMIC", JSON.parse(body));
+			const httpsoptions = {
+				  hostname: comicHostname,
+				  port: 443,
+				  path: comicDailyJsonUrlPath,
+				  method: 'GET'
+			}
+			const req = https.request(httpsoptions, res => {
+				if (res.statusCode == 200){
+					res.on('data', body => {
+						if (!payload.config.randomComic || dayOfWeek == 1 || dayOfWeek == 3 || dayOfWeek == 5) {
+							
+							self.sendSocketNotification("COMIC", JSON.parse(body));
+							return;
+							
+						} else {
+							var comic = JSON.parse(body);
+							var randomNumber = Math.floor((Math.random() * comic.num) + 1);
+							// use "randomNumber = 1732;" to test with long comic
+							var randomUrlPath = "/" + randomNumber + "/info.0.json";
+							const httpsoptions2 = {
+								  hostname: comicHostname,
+								  port: 443,
+								  path: randomUrlPath,
+								  method: 'GET'
 							}
-						});
-					}
+							const req2 = https.request(httpsoptions2, res2 => {
+								if (res2.statusCode == 200) {
+									res2.on('data', body2 => {
+										self.sendSocketNotification("COMIC", JSON.parse(body2));
+									});
+								}
+							});
+							req2.end();
+						}
+					});
 				}
 			});
+			
+			req.end();
 		}
-	},
+	}
 });
